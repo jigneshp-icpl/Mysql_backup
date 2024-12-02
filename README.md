@@ -253,5 +253,181 @@ Docker database image could expose a directory you could add files as init sql s
     environment:
       - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
       - MYSQL_DATABASE=${DATABASE_NAME}
-    restart: unless-stopped
+    restart: unless-stopped                                                                                                                                                                                                                                                                 
+# Project Title
+
+A brief description of what this project does and who it's for
+
+### MySQL Backup Script
+This script automates the process of taking backups of MySQL databases, compressing them, and logging the details into a MySQL table. It also supports symlinks for the latest backups and optional deletion of old backups.
+________________________________________
+### Features
+•	Automated Backups: Backs up all or specific MySQL databases.
+•	Backup Compression: Compresses backups using gzip with configurable levels.
+•	Backup Logging: Logs backup details into a MySQL table (backup_log) with:
+•	database_name
+•	backup_file
+•	backup_size (in KB)
+•	backup_date
+•	Environment Variables: Securely fetches credentials and configurations using environment variables or files.
+•	Error Handling: Ensures robust handling of failures during the backup process.
+•	Symlink for Latest Backups: Maintains symlinks for easy access to the latest backup.
+________________________________________
+### Table Schema
+Before using the script, ensure the backup_log table exists in your logging database.
+sql
+Copy code
+CREATE TABLE backup_log ( id INT AUTO_INCREMENT PRIMARY KEY, database_name VARCHAR(255) NOT NULL, backup_file VARCHAR(255) NOT NULL, backup_size BIGINT NOT NULL COMMENT 'Size in KB', backup_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ); 
+________________________________________
+### Prerequisites
+•	MySQL server with necessary privileges to access and dump databases.
+•	A user with permissions to insert into the backup_log table.
+•	mysqldump and gzip utilities installed on the system.
+________________________________________
+### Configuration
+The script reads the following environment variables:
+Variable Name	Description	Required
+MYSQL_HOST	MySQL server hostname	✅
+MYSQL_PORT	MySQL server port	❌ (default: 3306)
+MYSQL_USER	MySQL username	✅
+MYSQL_PASS	MySQL password	✅
+MYSQL_DATABASE	Comma-separated list of databases to back up	❌ (default: all databases)
+GZIP_LEVEL	Compression level for gzip (1-9)	❌ (default: 6)
+MAX_BACKUPS	Number of backups to retain (older backups are deleted)	❌
+Alternatively, you can provide the credentials using file-based environment variables:
+•	MYSQL_HOST_FILE
+•	MYSQL_USER_FILE
+•	MYSQL_PASS_FILE
+•	MYSQL_DATABASE_FILE
+________________________________________
+### Usage
+1.	Prepare the Environment
+•	Install MySQL client and ensure access to the target database server.
+•	Create the backup_log table in the logging database.
+2.	Configure the Script
+•	Save the script as backup.sh.
+•	Update variables or provide environment files as needed.
+3.	Run the Script
+bash
+Copy code
+chmod +x backup.sh ./backup.sh 
+4.	Automate Backups To schedule backups using cron:
+bash
+Copy code
+crontab -e 
+Example to back up daily at midnight:
+bash
+Copy code
+0 0 * * * /path/to/backup.sh 
+________________________________________
+### Backup Details
+After running the script:
+•	Backup files are stored in the /backup directory (default).
+•	Each backup file follows the naming convention: YYYYMMDDHHMM.database_name.sql.gz.
+•	Symlinks for the latest backups are created with the prefix latest.database_name.sql.gz.
+Log Entry Example
+Each successful backup inserts a row into the backup_log table:
+database_name	backup_file	backup_size	backup_date
+test_db	20241201.test_db.sql.gz	12345	2024-12-01 00:00:00
+________________________________________
+### Error Handling
+If a backup fails for any reason:
+•	The script will print an error message for the failed database.
+•	Temporary backup files are removed to avoid clutter.
+________________________________________
+Contributions
+Feel free to improve this script or adapt it to your needs. Pull requests are welcome!
+________________________________________
+License
+This project is released under the MIT License.
+
+## Color Reference
+
+| Color             | Hex                                                                |
+| ----------------- | ------------------------------------------------------------------ |
+| Example Color | ![#0a192f](https://via.placeholder.com/10/0a192f?text=+) #0a192f |
+| Example Color | ![#f8f8f8](https://via.placeholder.com/10/f8f8f8?text=+) #f8f8f8 |
+| Example Color | ![#00b48a](https://via.placeholder.com/10/00b48a?text=+) #00b48a |
+| Example Color | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #00d1a0 |
+
+### MySQL Backup Script
+This script automates the process of taking backups of MySQL databases, compressing them, and logging the details into a MySQL table. It also supports symlinks for the latest backups and optional deletion of old backups.
+________________________________________
+### Features
+•	Automated Backups: Backs up all or specific MySQL databases.
+•	Backup Compression: Compresses backups using gzip with configurable levels.
+•	Backup Logging: Logs backup details into a MySQL table (backup_log) with:
+•	database_name
+•	backup_file
+•	backup_size (in KB)
+•	backup_date
+•	Environment Variables: Securely fetches credentials and configurations using environment variables or files.
+•	Error Handling: Ensures robust handling of failures during the backup process.
+•	Symlink for Latest Backups: Maintains symlinks for easy access to the latest backup.
+________________________________________
+### Table Schema
+Before using the script, ensure the backup_log table exists in your logging database.
+sql
+CREATE TABLE backup_log ( id INT AUTO_INCREMENT PRIMARY KEY, database_name VARCHAR(255) NOT NULL, backup_file VARCHAR(255) NOT NULL, backup_size BIGINT NOT NULL COMMENT 'Size in KB', backup_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ); 
+________________________________________
+### Prerequisites
+•	MySQL server with necessary privileges to access and dump databases.
+•	A user with permissions to insert into the backup_log table.
+•	mysqldump and gzip utilities installed on the system.
+________________________________________
+### Configuration
+The script reads the following environment variables:
+Variable Name	Description	Required
+MYSQL_HOST	MySQL server hostname	✅
+MYSQL_PORT	MySQL server port	❌ (default: 3306)
+MYSQL_USER	MySQL username	✅
+MYSQL_PASS	MySQL password	✅
+MYSQL_DATABASE	Comma-separated list of databases to back up	❌ (default: all databases)
+GZIP_LEVEL	Compression level for gzip (1-9)	❌ (default: 6)
+MAX_BACKUPS	Number of backups to retain (older backups are deleted)	❌
+Alternatively, you can provide the credentials using file-based environment variables:
+•	MYSQL_HOST_FILE
+•	MYSQL_USER_FILE
+•	MYSQL_PASS_FILE
+•	MYSQL_DATABASE_FILE
+________________________________________
+### Usage
+1.	Prepare the Environment
+	Install MySQL client and ensure access to the target database server.
+	Create the backup_log table in the logging database.
+2.	Configure the Script
+	Save the script as backup.sh.
+	Update variables or provide environment files as needed.
+3.	Run the Script
+
+chmod +x backup.sh ./backup.sh 
+4.	Automate Backups To schedule backups using cron:
+crontab -e 
+Example to back up daily at midnight:
+bash
+Copy code
+0 0 * * * /path/to/backup.sh 
+________________________________________
+### Backup Details
+After running the script:
+•	Backup files are stored in the /backup directory (default).
+•	Each backup file follows the naming convention: YYYYMMDDHHMM.database_name.sql.gz.
+•	Symlinks for the latest backups are created with the prefix latest.database_name.sql.gz.
+Log Entry Example
+Each successful backup inserts a row into the backup_log table:
+database_name	backup_file	backup_size	backup_date
+test_db	20241201.test_db.sql.gz	12345	2024-12-01 00:00:00
+________________________________________
+### Error Handling
+If a backup fails for any reason:
+•	The script will print an error message for the failed database.
+•	Temporary backup files are removed to avoid clutter.
+________________________________________
+### Contributions
+Feel free to improve this script or adapt it to your needs. Pull requests are welcome!
+________________________________________
+### License
+This project is released under the MIT License.
+
+
 ```
